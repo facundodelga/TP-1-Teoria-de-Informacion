@@ -15,8 +15,8 @@
 # En el caso de ser una fuente de memoria no nula, obtener su vector estacionario.
 
 import sys  # # Este import sirve para los argumentos de consola
-import numpy as np # esta libreria intalenla poniendo en la consola pip install numpy es para hacer cuentas matematicas mas facil
 import math
+
 class archivo:
     def __init__(self, filename, n):
         self.filename = filename
