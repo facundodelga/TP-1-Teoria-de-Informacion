@@ -16,30 +16,70 @@
 
 import sys  # # Este import sirve para los argumentos de consola
 import numpy as np # esta libreria intalenla poniendo en la consola pip install numpy es para hacer cuentas matematicas mas facil
-
+import math
 class archivo:
     def __init__(self, filename, n):
         self.filename = filename
         self.n = n
-        self.contenido = {} # esto lo puse asi para que quede como clave : valor, la clave es el caracter en ASCII y el valor va a ser las veces que se repite
+        self.M = [[0,0],[0,0]]
     
     def abrirArchivo(self):
-        with open(self.filename) as f:
-            for lines in f:
-                line = lines.rstrip().decode("ascii")
-                if(line in self.contenido.keys()):
-                    self.contenido[line] += 1
-                else:
-                    self.contenido.update({line : 1})
+        with open(self.filename,"rb") as f:
+            file = f.read()
+            
+            for line in file:
+                binario = convertirABinario(line)
+                
+                bits = [int(bit) for bit in binario]
+                print(bits)
+                anterior = bits[0]
+                actual = 1
+                
+                for actual in bits:
+                    self.M[actual][anterior] += 1
+                    anterior = actual
 
+        t0 = self.M[0][0] + self.M[1][0]
+        t1 = self.M[0][1] + self.M[1][1]
+
+        self.M[0][0] /= t0  #p00 
+        self.M[1][0] /= t0  #p10 
+        self.M[0][1] /= t1  #p01 
+        self.M[1][1] /= t1  #p11
+        
+        return 0
+    
+    #b) Determinar si el contenido del archivo filename.bin proviene de una fuente binaria de memoria nula o no nula y calcular su entropía.
+    def nula(self):
+        #Para ser memoria nula los elementos de la fila van a ser iguales
+        return self.M[0][0] == self.M[0][1] and self.M[1][0] == self.M[1][1]
+    
+    def entropiaMemoriaNula(self):
+        #calculo de entropia para memoria nula
+        return self.M[0][0] * math.log2(1 / self.M[0][0]) + self.M[0][1] * math.log2 (1 / self.M[0][1])
+    
+    def  entropiaMemoriaNoNula(self):
+        return 0
+    
+def convertirABinario(valor_byte):
+    representacion_binaria = bin(valor_byte)[2:]
+
+    # La representación binaria tenga 8 bits (rellenando con ceros a la izquierda si es necesario)
+    representacion_binaria = representacion_binaria.zfill(8)
+    
+    return representacion_binaria
 
 def main():
-    filename = sys.argv[1]
-    if(len(sys.argv) > 2):
-        n = sys.argv[2]
+    #filename = sys.argv[1]
+    filename = "tp1_sample0.bin"
+    n = 0
+    # if(len(sys.argv) > 2):
+    #     n = sys.argv[2]
     #print("filename: " + filename + " n: " + n)
     
     arch = archivo(filename, n)
+    arch.abrirArchivo()
+    
 
 if __name__ == "__main__":
     main()
