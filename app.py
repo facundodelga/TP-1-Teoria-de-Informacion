@@ -32,9 +32,10 @@ class archivo:
                 
                 bits = [int(bit) for bit in binario]
                 print(bits)
-                anterior = bits[0]
-                actual = 1
                 
+                anterior = bits[0]
+                bits.pop(0)
+
                 for actual in bits:
                     self.M[actual][anterior] += 1
                     anterior = actual
@@ -54,13 +55,22 @@ class archivo:
         #Para ser memoria nula los elementos de la fila van a ser iguales
         return self.M[0][0] == self.M[0][1] and self.M[1][0] == self.M[1][1]
     
-    def entropiaMemoriaNula(self):
+## ==Preguntar estos dos metodos==
+
+    def entropiaMemoriaNula(self): 
         #calculo de entropia para memoria nula
         return self.M[0][0] * math.log2(1 / self.M[0][0]) + self.M[0][1] * math.log2 (1 / self.M[0][1])
     
-    def  entropiaMemoriaNoNula(self):
-        return 0
-    
+    def  entropiaMemoriaNoNula(self): 
+        p0 = self.M[0][0]
+        p1 = self.M[1][1]
+
+        if(p0 == 0 or p1 == 0):
+            return 0
+
+        return p0 * math.log2(1 / p0) + p1 * math.log2(1 / p1)
+###======
+
 def convertirABinario(valor_byte):
     representacion_binaria = bin(valor_byte)[2:]
 
