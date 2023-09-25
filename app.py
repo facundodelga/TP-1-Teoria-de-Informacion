@@ -16,6 +16,7 @@
 
 import sys  # # Este import sirve para los argumentos de consola
 import math
+import numpy as np
 
 class archivo:
     def __init__(self, filename, n):
@@ -60,7 +61,7 @@ class archivo:
     def entropiaMemoriaNula(self): 
         #calculo de entropia para memoria nula
         return self.M[0][0] * math.log2(1 / self.M[0][0]) + self.M[0][1] * math.log2 (1 / self.M[0][1])
-    
+
     def  entropiaMemoriaNoNula(self): 
         p0 = self.M[0][0]
         p1 = self.M[1][1]
@@ -69,7 +70,31 @@ class archivo:
             return 0
 
         return p0 * math.log2(1 / p0) + p1 * math.log2(1 / p1)
+
 ###======
+
+    def calcularVectorEstacionario(self): #Preguntar
+    
+        if(not nula()):
+            # Definir la matriz de probabilidad condicional (self.M)
+            matriz_condicional = np.array(self.M)
+            
+            # Definir el vector de probabilidad inicial
+            vector_inicial = np.array([0.5, 0.5]) 
+            
+            # Calcular el vector estacionario
+            vector_estacionario = vector_inicial
+            nuevo_vector_estacionario = np.array([])
+            while (True):
+                nuevo_vector_estacionario = np.dot(vector_estacionario, matriz_condicional)
+                if np.equal(nuevo_vector_estacionario, vector_estacionario):
+                    # Si el vector no cambia significativamente termino el ciclo
+                    break
+                vector_estacionario = nuevo_vector_estacionario
+        
+        return vector_estacionario
+
+
 
 def convertirABinario(valor_byte):
     representacion_binaria = bin(valor_byte)[2:]
@@ -89,6 +114,8 @@ def main():
     
     arch = archivo(filename, n)
     arch.abrirArchivo()
+
+
     
 
 if __name__ == "__main__":
