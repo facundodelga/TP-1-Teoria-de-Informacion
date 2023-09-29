@@ -55,8 +55,6 @@ class archivo:
     def nula(self):
         #Para ser memoria nula los elementos de la fila van a ser iguales
         return self.M[0][0] == self.M[0][1] and self.M[1][0] == self.M[1][1]
-    
-## ==Preguntar estos dos metodos==
 
     def entropiaMemoriaNula(self): 
         #calculo de entropia para memoria nula
@@ -71,9 +69,7 @@ class archivo:
 
         return p0 * math.log2(1 / p0) + p1 * math.log2(1 / p1)
 
-###======
-
-    def calcularVectorEstacionario(self): #Preguntar
+    def calcularVectorEstacionario(self): 
     
         if(not nula()):
             # Definir la matriz de probabilidad condicional (self.M)
@@ -88,13 +84,11 @@ class archivo:
             while (True):
                 nuevo_vector_estacionario = np.dot(vector_estacionario, matriz_condicional)
                 if np.equal(nuevo_vector_estacionario, vector_estacionario):
-                    # Si el vector no cambia significativamente termino el ciclo
+                    # Si el vector no cambia termina el ciclo
                     break
                 vector_estacionario = nuevo_vector_estacionario
         
         return vector_estacionario
-
-
 
 def convertirABinario(valor_byte):
     representacion_binaria = bin(valor_byte)[2:]
@@ -114,9 +108,6 @@ def main():
     
     arch = archivo(filename, n)
     arch.abrirArchivo()
-
-
-    
 
 if __name__ == "__main__":
     main()
