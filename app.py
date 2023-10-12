@@ -164,7 +164,7 @@ def main():
 
     arch = archivo(filename, n)
 
-    if(arch.abrirArchivo()):
+    if(arch.abrirArchivo() == 0):
         arch.print_M()
         
         if(arch.nula()):
