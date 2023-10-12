@@ -71,7 +71,11 @@ class archivo:
         return self.M[0][0] == self.M[0][1] and self.M[1][0] == self.M[1][1]
 
     def entropiaMemoriaNula(self): 
-        #calculo de entropia para memoria nula
+        p0 = self.M[0][0]
+        p1 = self.M[1][1] 
+        
+        if(p0 == 0 or p1 == 0):
+            return 0
         return round(self.M[0][0] * math.log2(1 / self.M[0][0]) + self.M[1][1] * math.log2 (1 / self.M[1][1]),2)
 
     def  entropiaMemoriaNoNula(self):
@@ -93,17 +97,19 @@ class archivo:
             
         # Definir el vector de probabilidad inicial
         vector_inicial = np.array([0.5, 0.5]) 
-        
         # Calcular el vector estacionario
         vector_estacionario = vector_inicial
         nuevo_vector_estacionario = np.array([])
+
         while (True):
-            nuevo_vector_estacionario = np.dot(vector_estacionario, matriz_condicional)
-            if np.equal(nuevo_vector_estacionario, vector_estacionario):
+
+            nuevo_vector_estacionario = matriz_condicional.dot(vector_estacionario)
+            if np.allclose(nuevo_vector_estacionario, vector_estacionario):
                 # Si el vector no cambia termina el ciclo
                 break
             vector_estacionario = nuevo_vector_estacionario
-        
+        vector_estacionario[0] = round(vector_estacionario[0],2)
+        vector_estacionario[1] = round(vector_estacionario[1],2)
         return vector_estacionario
     
             
@@ -176,6 +182,8 @@ def main():
         else:
             print("\nLa fuente tiene simbolos estadisticamente dependientes (es de memoria no nula)")
             print("\nLa entropia de la fuente es: " + str(arch.entropiaMemoriaNoNula()))
+            print("\nVector estacionario " + str(arch.calcularVectorEstacionario()))
+
 
 
 if __name__ == "__main__":
