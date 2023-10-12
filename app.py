@@ -38,17 +38,27 @@ class archivo:
                 bits.pop(0)
 
                 for actual in bits:
-                    self.M[actual][anterior] += 1
+                    self.M[anterior][actual] += 1
                     anterior = actual
-
-        t0 = self.M[0][0] + self.M[1][0]
-        t1 = self.M[0][1] + self.M[1][1]
-
-        self.M[0][0] /= t0  #p00 
-        self.M[1][0] /= t0  #p10 
-        self.M[0][1] /= t1  #p01 
-        self.M[1][1] /= t1  #p11
         
+        t0 = self.M[0][0] + self.M[1][0]  
+        t1 = self.M[1][1] + self.M[0][1]
+        
+        # Probabilidad desde el estado 0
+        self.M[0][0] /= t0  #p00
+        self.M[0][0] = round(self.M[0][0],2)
+        
+        self.M[1][0] /= t0  #p10
+        self.M[1][0] = round(self.M[1][0],2) 
+        
+        # Probabilidad desde el estado 1
+        self.M[0][1] /= t1  #p01
+        self.M[0][1] = round(self.M[0][1],2)
+        
+        self.M[1][1] /= t1  #p11
+        self.M[1][1] = round(self.M[1][1],2)
+        
+        print(self.M)
         return 0
     
     #b) Determinar si el contenido del archivo filename.bin proviene de una fuente binaria de memoria nula o no nula y calcular su entropía.
@@ -58,16 +68,18 @@ class archivo:
 
     def entropiaMemoriaNula(self): 
         #calculo de entropia para memoria nula
-        return self.M[0][0] * math.log2(1 / self.M[0][0]) + self.M[0][1] * math.log2 (1 / self.M[0][1])
+        return self.M[0][0] * math.log2(1 / self.M[0][0]) + self.M[1][1] * math.log2 (1 / self.M[1][1])
 
     def  entropiaMemoriaNoNula(self): 
-        p0 = self.M[0][0]
-        p1 = self.M[1][1]
+        p00 = self.M[0][0]
+        p10 = self.M[0][1]
+        p01 = self.M[1][0]
+        p11 = self.M[1][1]
 
-        if(p0 == 0 or p1 == 0):
-            return 0
+        # if(p0 == 0 or p1 == 0):
+        #     return 0
 
-        return p0 * math.log2(1 / p0) + p1 * math.log2(1 / p1)
+        return round(p00 * math.log2(1 / p00) + p01 * math.log2(1 / p01) + p10 * math.log2(1 / p10) + p11 * math.log2(1 / p11),2)
 
     def calcularVectorEstacionario(self): 
         # Definir la matriz de probabilidad condicional (self.M)
@@ -93,35 +105,39 @@ class archivo:
     def calculaDicProbabilidadesCombinadas(self, probabilidades, n):
         if n == 1:
             return {"0": probabilidades[0], "1": probabilidades[1]}
+        
         primera_parte = self.calculaDicProbabilidadesCombinadas(probabilidades, n - 1)
-        segunda_parte = primera_parte.copy()  # Copia el diccionario primera_parte
+        # segunda_parte = primera_parte.copy()  # Copia el diccionario primera_parte
+        
         # Actualiza la primera parte con "0"
-        for key in primera_parte:
-            primera_parte[key + "0"] = primera_parte[key] * probabilidades[0]
+        dict_aux = primera_parte.copy()
+        for key in dict_aux.keys():
+            primera_parte[key + "0"] = round(primera_parte[key] * probabilidades[0],2)
+        
+        for key in dict_aux.keys():
+            primera_parte[key + "1"] = round(primera_parte[key] * probabilidades[1],2)
+            
         # Actualiza la segunda parte con "1"
-        for key in segunda_parte:
-            segunda_parte[key + "1"] = segunda_parte[key] * probabilidades[1]
-        return {**primera_parte, **segunda_parte}
+        # dict_aux = segunda_parte.copy()
+        # for key in dict_aux.keys():
+        #     segunda_parte[key + "1"] = round(segunda_parte[key] * probabilidades[1],2)
+        
+        return primera_parte
 
 
     def calculaEntropiaExtensionN(self,n):
         probabilidades=[self.M[0][0],self.M[1][1]]
-        entropia=0
+        entropia = 0
         #Se calcula el diccionario con las probabilidades combinadas segun el orden que se ingreso
         dicProbabilidadesCombinadas=self.calculaDicProbabilidadesCombinadas(probabilidades,n)
         print("El vector de probabilidades combinadas es:")
         print(dicProbabilidadesCombinadas)
         #Calculo de la entropia de la fuente extendida de orden n
-        for key in dicProbabilidadesCombinadas:
-            entropia+=dicProbabilidadesCombinadas[key]*math.log2(1/dicProbabilidadesCombinadas[key])
+        for key in dicProbabilidadesCombinadas.keys():
+            if(dicProbabilidadesCombinadas[key] != 0 and len(key) == n): 
+                entropia += dicProbabilidadesCombinadas[key] * math.log2(1 / dicProbabilidadesCombinadas[key])
         print("La entropia de la fuente extendida de orden: %d es:" %n)
         print("Entropia: %f" % entropia)
-
-        
-
-
-        
-
 
 def convertirABinario(valor_byte):
     representacion_binaria = bin(valor_byte)[2:]
@@ -133,8 +149,8 @@ def convertirABinario(valor_byte):
 
 def main():
     #filename = sys.argv[1]
-    filename = "tp1_sample0.bin"
-    n=1
+    filename = "tp1_sample3.bin"
+    n=3
     # if(len(sys.argv) > 2):
     #     n = sys.argv[2]
     # else
@@ -142,14 +158,16 @@ def main():
     #print("filename: " + filename + " n: " + n)
     arch = archivo(filename, n)
     arch.abrirArchivo()
+    print(str(arch.nula()))
     if(arch.nula()):
         print("La fuente tiene simbolos estadisticamente independientes (es de memoria nula)")
-        print("La entropia de la fuente es: %d" %arch.entropiaMemoriaNula())
+        print("La entropia de la fuente es: " + str(arch.entropiaMemoriaNula()))
         arch.calculaEntropiaExtensionN(n)
     else:
         print("La fuente tiene simbolos estadisticamente dependientes (es de memoria no nula)")
-        print("La entropia de la fuente es: %d" % arch.entropiaMemoriaNoNula())
-        
+        print("La entropia de la fuente es: " + str(arch.entropiaMemoriaNoNula()))
+    
+    # input(" fin ")
 
 if __name__ == "__main__":
     main()
