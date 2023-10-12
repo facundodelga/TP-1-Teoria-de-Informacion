@@ -158,7 +158,7 @@ def main():
     # filename = "tp1_sample0.bin"
     
     if(len(sys.argv) > 2):
-        n = sys.argv[2]
+        n = int(sys.argv[2])
     else:
         n=1
 
