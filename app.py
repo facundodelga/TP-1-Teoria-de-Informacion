@@ -74,16 +74,18 @@ class archivo:
         #calculo de entropia para memoria nula
         return round(self.M[0][0] * math.log2(1 / self.M[0][0]) + self.M[1][1] * math.log2 (1 / self.M[1][1]),2)
 
-    def  entropiaMemoriaNoNula(self): 
-        p00 = self.M[0][0]
-        p10 = self.M[0][1]
-        p01 = self.M[1][0]
-        p11 = self.M[1][1]
+    def  entropiaMemoriaNoNula(self):
+        entropia = 0
         
-        # if(p0 == 0 or p1 == 0):
-        #     return 0
-
-        return round(p00 * math.log2(1 / p00) + p01 * math.log2(1 / p01) + p10 * math.log2(1 / p10) + p11 * math.log2(1 / p11),2)
+        for i in range(len(self.M)):
+            for j in range(len(self.M[0])):
+                
+                if(self.M[i][j] != 0):
+                    entropia += (self.M[i][j] * math.log2(1 / self.M[i][j]))
+            
+        entropia = round(entropia,2)
+        
+        return entropia
 
     def calcularVectorEstacionario(self): 
         # Definir la matriz de probabilidad condicional (self.M)
@@ -168,12 +170,12 @@ def main():
         arch.print_M()
         
         if(arch.nula()):
-            print("La fuente tiene simbolos estadisticamente independientes (es de memoria nula)")
-            print("La entropia de la fuente es: " + str(arch.entropiaMemoriaNula()))
+            print("\nLa fuente tiene simbolos estadisticamente independientes (es de memoria nula)")
+            print("\nLa entropia de la fuente es: " + str(arch.entropiaMemoriaNula()))
             arch.calculaEntropiaExtensionN(n)
         else:
-            print("La fuente tiene simbolos estadisticamente dependientes (es de memoria no nula)")
-            print("La entropia de la fuente es: " + str(arch.entropiaMemoriaNoNula()))
+            print("\nLa fuente tiene simbolos estadisticamente dependientes (es de memoria no nula)")
+            print("\nLa entropia de la fuente es: " + str(arch.entropiaMemoriaNoNula()))
 
 
 if __name__ == "__main__":
