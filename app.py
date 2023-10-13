@@ -102,14 +102,17 @@ class archivo:
         nuevo_vector_estacionario = np.array([])
 
         while (True):
-
             nuevo_vector_estacionario = matriz_condicional.dot(vector_estacionario)
+            
             if np.allclose(nuevo_vector_estacionario, vector_estacionario):
                 # Si el vector no cambia termina el ciclo
                 break
+            
             vector_estacionario = nuevo_vector_estacionario
+            
         vector_estacionario[0] = round(vector_estacionario[0],2)
         vector_estacionario[1] = round(vector_estacionario[1],2)
+        
         return vector_estacionario
     
             
@@ -145,8 +148,7 @@ class archivo:
             
         entropia = round(entropia,2)
         
-        print("La entropia de la fuente extendida de orden: %d es:" %n)
-        print("Entropia: " + str(entropia))
+        print("La entropia de la fuente extendida de orden " + str(n) + " es: " + str(entropia))
         
     def print_M(self):
         print("Matriz de probabilidades condicionales")
