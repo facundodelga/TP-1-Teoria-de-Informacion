@@ -69,7 +69,7 @@ class archivo:
     #b) Determinar si el contenido del archivo filename.bin proviene de una fuente binaria de memoria nula o no nula y calcular su entropía.
     def nula(self):
         #Para ser memoria nula los elementos de la fila van a ser iguales
-        return self.M[0][0] == self.M[0][1] and self.M[1][0] == self.M[1][1]
+        return abs(self.M[0][0] - self.M[0][1]) < 0.001 and abs(self.M[1][0] - self.M[1][1]) < 0.001
 
     def entropiaMemoriaNula(self): 
         p0 = self.M[0][0]
