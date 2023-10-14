@@ -48,17 +48,17 @@ class archivo:
             
             # Probabilidad desde el estado 0
             self.M[0][0] /= t0  #p00
-            #self.M[0][0] = round(self.M[0][0],2)
+            self.M[0][0] = round(self.M[0][0],2)
             
             self.M[1][0] /= t0  #p10
-            #self.M[1][0] = round(self.M[1][0],2) 
+            self.M[1][0] = round(self.M[1][0],2) 
             
             # Probabilidad desde el estado 1
             self.M[0][1] /= t1  #p01
-            #self.M[0][1] = round(self.M[0][1],2)
+            self.M[0][1] = round(self.M[0][1],2)
             
             self.M[1][1] /= t1  #p11
-            #self.M[1][1] = round(self.M[1][1],2)
+            self.M[1][1] = round(self.M[1][1],2)
             
             return 0
         except:
@@ -80,13 +80,11 @@ class archivo:
         return self.M[0][0] * math.log2(1 / self.M[0][0]) + self.M[1][1] * math.log2 (1 / self.M[1][1])
 
     def  entropiaMemoriaNoNula(self):
-        #entropia = 0
+        entropia = 0
         termino1 = self.vector_estacionario[0] * (self.M[0][0] * math.log2(1 / self.M[0][0]) + (self.M[0][1] * math.log2(1 / self.M[0][1])))
         termino2 = self.vector_estacionario[1] * (self.M[1][0] * math.log2(1 / self.M[1][0]) + (self.M[1][1] * math.log2(1 / self.M[1][1])))
         
         entropia = termino1 + termino2 
-            
-        #entropia = round(entropia,2)
         return entropia
 
     def calcularVectorEstacionario(self): 
